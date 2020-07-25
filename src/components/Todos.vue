@@ -102,8 +102,6 @@
 <script>
 import Confirmation from './Confirmation.vue';
 
-// const dataURL = 'http://localhost:5000/api/tasks/';
-
 export default {
   name: 'Todo',
   data() {
@@ -119,7 +117,7 @@ export default {
         is_completed: [],
       },
       confirmationMessage: '',
-      showConfirmation: false,
+      showConfirmation: [],
       n_completed: 0,
       n_uncompleted: 0,
     };
@@ -155,10 +153,8 @@ export default {
       let newID = localStorage.length;
       for (let i = 0; i < localStorage.length; i += 1) {
         const keyItem = Number(localStorage.key(i));
-        console.log(`keyItem = ${keyItem} newID = ${newID}`);
         newID = (keyItem && newID <= keyItem) ? keyItem + 1 : newID;
       }
-      console.log(`newID = ${newID}`);
       const addOdj = {
         uid: newID,
         description: this.addTodoForm.description,
@@ -168,7 +164,7 @@ export default {
       localStorage.setItem(newID, JSON.stringify(addOdj));
       this.getTodos();
       this.confirmationMessage = `Задача "${this.addTodoForm.description}" добавлена`;
-      this.showConfirmation = true;
+      this.showConfirmation = [true];
       this.resetForm();
     },
     onReset(event) {
@@ -183,7 +179,7 @@ export default {
       this.showConfirmation = true;
       if (todo.is_completed) {
         this.updateTodoForm.is_completed = [true];
-        this.showConfirmation = true;
+        this.showConfirmation = [true];
       }
     },
     onUpdateSubmit(event) {
@@ -196,7 +192,7 @@ export default {
       };
       if (localStorage.getItem(updOdj.uid) === null) {
         alert('Запись была удалена другим пользователем');
-        this.showConfirmation = true;
+        this.showConfirmation = [true];
         this.confirmationMessage = 'Обновляемая запись была удалена другим пользователем';
         this.getTodos();
       } else {
@@ -206,7 +202,7 @@ export default {
         } else {
           this.confirmationMessage = `Задача  "${updOdj.description}" обновлена`;
         }
-        this.showConfirmation = true;
+        this.showConfirmation = [true];
         this.getTodos();
       }
     },
@@ -217,7 +213,7 @@ export default {
     },
     deleteTodo(todo) {
       this.confirmationMessage = `Задача "${todo.description}" удалена из списка`;
-      this.showConfirmation = true;
+      this.showConfirmation = [true];
       localStorage.removeItem(todo.uid);
       this.getTodos();
     },
