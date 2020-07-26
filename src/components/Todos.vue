@@ -129,6 +129,7 @@ export default {
       this.todos = [];
       for (let i = 0; i < localStorage.length; i += 1) {
         const keyItem = Number(localStorage.key(i));
+        // в todos добавляем задачи только с числовым ключом keyItem
         const arr = localStorage.getItem(keyItem) ? JSON.parse(localStorage.getItem(keyItem)) : [];
         if (arr.length !== 0) {
           this.todos.push(arr);
@@ -150,6 +151,7 @@ export default {
     onSubmit(event) {
       event.preventDefault();
       this.$refs.addTodoModal.hide();
+      //  новый ИД равен длине массива или максимальному ключу задачи, увеличенному на единицу
       let newID = localStorage.length;
       for (let i = 0; i < localStorage.length; i += 1) {
         const keyItem = Number(localStorage.key(i));
@@ -160,7 +162,6 @@ export default {
         description: this.addTodoForm.description,
         is_completed: this.addTodoForm.is_completed.length > 0,
       };
-
       localStorage.setItem(newID, JSON.stringify(addOdj));
       this.getTodos();
       this.confirmationMessage = `Задача "${this.addTodoForm.description}" добавлена`;
@@ -223,6 +224,8 @@ export default {
   },
   created() {
     this.getTodos();
+    // если нет сообщения,то не выводим аллерт
+    this.showConfirmation = this.confirmationMessage !== '';
   },
 };
 </script>
