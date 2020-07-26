@@ -115,9 +115,10 @@ export default {
         uid: 0,
         description: '',
         is_completed: [],
+        on_reset: 0,
       },
       confirmationMessage: '',
-      showConfirmation: [],
+      showConfirmation: false,
       n_completed: 0,
       n_uncompleted: 0,
     };
@@ -165,7 +166,7 @@ export default {
       localStorage.setItem(newID, JSON.stringify(addOdj));
       this.getTodos();
       this.confirmationMessage = `Задача "${this.addTodoForm.description}" добавлена`;
-      this.showConfirmation = [true];
+      this.showConfirmation = true;
       this.resetForm();
     },
     onReset(event) {
@@ -177,44 +178,55 @@ export default {
       this.updateTodoForm.uid = todo.uid;
       this.updateTodoForm.description = todo.description;
       this.updateTodoForm.is_completed = todo.is_completed;
-      this.showConfirmation = true;
       if (todo.is_completed) {
         this.updateTodoForm.is_completed = [true];
-        this.showConfirmation = [true];
+        this.showConfirmation = true;
       }
+      this.showConfirmation = true;
     },
     onUpdateSubmit(event) {
       event.preventDefault();
       this.$refs.updateTodoModal.hide();
+      this.confirmationMessage = '';
       const updOdj = {
         uid: this.updateTodoForm.uid,
         description: this.updateTodoForm.description,
         is_completed: this.updateTodoForm.is_completed.length > 0,
       };
       if (localStorage.getItem(updOdj.uid) === null) {
-        alert('Запись была удалена другим пользователем');
-        this.showConfirmation = [true];
+        alert('Запись была удалена другим пользователем'); // eslint-disable-line no-alert
+        this.showConfirmation = true;
         this.confirmationMessage = 'Обновляемая запись была удалена другим пользователем';
-        this.getTodos();
       } else {
         localStorage.setItem(updOdj.uid, JSON.stringify(updOdj));
-        if (updOdj.is_completed) {
+        if (this.updateTodoForm.on_reset === 1) {
+          this.confirmationMessage += `${this.updateTodoForm.description}`;
+          this.showConfirmation = true;
+        } else if (updOdj.is_completed) {
           this.confirmationMessage = `Задача "${updOdj.description}" выполнена`;
+          this.showConfirmation = true;
         } else {
           this.confirmationMessage = `Задача  "${updOdj.description}" обновлена`;
+          this.showConfirmation = true;
         }
-        this.showConfirmation = [true];
-        this.getTodos();
+        this.showConfirmation = true;
       }
+      this.showConfirmation = this.confirmationMessage !== '';
+      this.getTodos();
     },
     onUpdateReset(event) {
       event.preventDefault();
       this.$refs.addTodoModal.hide();
+      this.updateTodoForm.on_reset = 1;
+      const modife = this.updateTodoForm.description;
       this.resetForm();
+      this.confirmationMessage = `Задача ${modife} заменена на ${this.updateTodoForm.description}`;
+      this.showConfirmation = true;
     },
     deleteTodo(todo) {
       this.confirmationMessage = `Задача "${todo.description}" удалена из списка`;
-      this.showConfirmation = [true];
+      this.showConfirmation = true;
+      console.log(typeof this.showConfirmation);
       localStorage.removeItem(todo.uid);
       this.getTodos();
     },
@@ -225,7 +237,7 @@ export default {
   created() {
     this.getTodos();
     // если нет сообщения,то не выводим аллерт
-    this.showConfirmation = this.confirmationMessage !== '';
+    this.showConfirmation = false;
   },
 };
 </script>
