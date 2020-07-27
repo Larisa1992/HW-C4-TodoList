@@ -8,7 +8,7 @@
 <script>
 export default {
   props: ['message', 'showDismissibleAlert'],
-  metods: {
+  methods: {
     dism() {
       this.$emit('closed');
     },
