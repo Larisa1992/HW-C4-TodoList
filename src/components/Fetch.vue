@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 
 // const dataURL = 'https://api.jsonbin.io/b/5e90e8278e85c84370140777';
 const dataURL = 'http://localhost:5000/api/tasks/';
