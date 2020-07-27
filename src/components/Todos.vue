@@ -6,7 +6,8 @@
       Число выполненных задач: {{n_completed}} </p>
     <confirmation
       :message="confirmationMessage"
-      :showDismissibleAlert = "showConfirmation">
+      :showDismissibleAlert = "showConfirmation"
+      @closed="confClosed">
     </confirmation>
       <button type="button" id="task-add" class="btn btn-success btn-sm align-left d-block"
        v-b-modal.todo-modal>Добавить задачу</button>
@@ -124,6 +125,9 @@ export default {
     };
   },
   methods: {
+    confClosed() {
+      this.showConfirmation = false;
+    },
     getTodos() {
       this.n_uncompleted = 0;
       this.n_completed = 0;
@@ -211,7 +215,7 @@ export default {
         }
         this.showConfirmation = true;
       }
-      this.showConfirmation = this.confirmationMessage !== '';
+      this.showConfirmation = true;
       this.getTodos();
     },
     onUpdateReset(event) {
@@ -226,7 +230,6 @@ export default {
     deleteTodo(todo) {
       this.confirmationMessage = `Задача "${todo.description}" удалена из списка`;
       this.showConfirmation = true;
-      console.log(typeof this.showConfirmation);
       localStorage.removeItem(todo.uid);
       this.getTodos();
     },
